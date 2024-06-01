@@ -399,7 +399,7 @@ class AutoEDAHelper():
         return feature_overiew_html, feature_details_html
 
     def datetime_feacture_as_html(self, colname):
-        no_of_rows_right= 50
+        no_of_rows_right= 48
         no_of_rows_left= 7
 
         desc_stats= self.datetime_feacture_desc_stats(colname)
@@ -477,7 +477,7 @@ class AutoEDAHelper():
         return feature_overiew_html, feature_details_html
 
     def cat_feacture_as_html(self, colname):
-        no_of_rows_right= 50
+        no_of_rows_right= 48
         no_of_rows_left= 7
 
         desc_stats= self.cat_feacture_desc_stats(colname)
@@ -536,7 +536,7 @@ class AutoEDAHelper():
         return feature_overiew_html, feature_details_html
 
     def text_feacture_as_html(self, colname):
-        no_of_rows_right= 50
+        no_of_rows_right= 48
         no_of_rows_left= 7
 
         desc_stats= self.cat_feacture_desc_stats(colname)
