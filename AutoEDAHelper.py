@@ -204,7 +204,7 @@ class AutoEDAHelper():
                 {top_table_1}{top_table_2}
                 <p class= "{self.para_class_df_overiew_descprtion}">This is an auto-generated HTML page demo.<br>
                 The scope of this project is to analyze exploratory data and do some basic preprocessing autometically.
-                Find the GitHub Repo <a href="">here.</a></p>
+                Find the GitHub Repo <a href="https://github.com/manab36/AutoEDA">here.</a></p>
             </div>
         '''
         # df_details_html= f'''
