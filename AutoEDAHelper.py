@@ -146,6 +146,8 @@ class AutoEDAHelper():
         self.img_type= ''
         self.pairplot_sample_size= ''
         self.floating_point_limit= ''
+        self.countplot_use_beans= True
+        self.count_plot_no_of_beans= 25
         
     def df_overview_as_html(self, datatypes_for_corr_plot, pairplot_sample_size= 50, floating_point_limit=3, img_type= 'png'):
         self.datatypes_for_corr_plot= datatypes_for_corr_plot
@@ -267,6 +269,7 @@ class AutoEDAHelper():
 
     def num_feacture_as_html(self, colname):
         desc_stats= self.num_feacture_desc_stats(colname)
+        hint_1= ""
         table_1= pd.DataFrame({
                 "Values": [f'{desc_stats["Values"].iloc[0]} ({desc_stats["Values_Percentage"].iloc[0].round(self.floating_point_limit)} %)'],
                 "Missing": [f'{desc_stats["Missing"].iloc[0]} ({desc_stats["Missing_Percentage"].iloc[0].round(self.floating_point_limit)} %)'],
@@ -333,13 +336,32 @@ class AutoEDAHelper():
         box_fig.savefig(box_fig_tmpfile, format=self.img_type, bbox_inches='tight')
         box_encoded = base64.b64encode(box_fig_tmpfile.getvalue()).decode('utf-8')
         plt.close(box_fig)
+
         """count plot"""
-        count_fig= plt.figure(figsize=(17,14))
-        sns.countplot(data=self.df, x= colname,color="red")
-        count_fig_tmpfile = BytesIO()
-        count_fig.savefig(count_fig_tmpfile, format=self.img_type, bbox_inches='tight')
-        count_encoded = base64.b64encode(count_fig_tmpfile.getvalue()).decode('utf-8')
-        plt.close(count_fig)
+        if self.countplot_use_beans:
+            bean_df= pd.DataFrame()
+            bean_df[colname]= self.df[colname].copy(deep=True)
+
+            bean_df["label"]= pd.cut(self.df[colname], bins= self.count_plot_no_of_beans, labels= [f'label_{i}' for i in range(1, self.count_plot_no_of_beans+1)])
+            countplot_df= bean_df.groupby("label", observed=False ).agg(sum= (colname, "sum"), count= (colname, "count"), square_sum= (colname, lambda x: sum(x*x))).reset_index()
+            countplot_df.columns = [''.join(col).strip() for col in countplot_df.columns.values]
+            countplot_df["square_sum_avg"]= countplot_df["square_sum"]/countplot_df["count"]
+
+            count_fig= plt.figure(figsize=(17,14))
+            sns.barplot(data=countplot_df.round(self.floating_point_limit), x= "square_sum_avg", y= "count", color="red")
+            count_fig_tmpfile = BytesIO()
+            count_fig.savefig(count_fig_tmpfile, format=self.img_type, bbox_inches='tight')
+            count_encoded = base64.b64encode(count_fig_tmpfile.getvalue()).decode('utf-8')
+            plt.close(count_fig)
+            hint_1= "Using Beans instead of actual value to limit number of bar"
+
+        else:
+            count_fig= plt.figure(figsize=(17,14))
+            sns.countplot(data=self.df, x= colname,color="red")
+            count_fig_tmpfile = BytesIO()
+            count_fig.savefig(count_fig_tmpfile, format=self.img_type, bbox_inches='tight')
+            count_encoded = base64.b64encode(count_fig_tmpfile.getvalue()).decode('utf-8')
+            plt.close(count_fig)
         
         feature_overiew_html= f'''
             <div class= "{self.div_class_ft_overiew}" onclick= "displayrightdiv('{self.div_class_ft_details_id}{colname}', '{self.div_class_ft_details}');">
@@ -359,6 +381,7 @@ class AutoEDAHelper():
                 <div class="{self.div_class_ft_img_and_table_wraper}">
                     <div class= "{self.div_class_ft_details_img}">
                         <img class= "{self.img_class_countplt}" src="data:image/{self.img_type};base64,{count_encoded}" alt="Graph">
+                        <p class="{self.para_class_ft_small_header_corr}" style= "margin-left: 25px;">{hint_1}</p>
                     </div>
                     <div class= "{self.div_class_ft_details_corr}">
                         <p class="{self.para_class_ft_small_header_corr}">Correlation: Pearson</p>{right_table_1}<p class="{self.para_class_ft_small_header_corr}">Correlation: Kendall</p>{right_table_2}
@@ -570,7 +593,6 @@ class AutoEDAHelper():
         desc_stats= self.cat_feacture_desc_stats(colname)
         temp= pd.DataFrame(self.df[colname].value_counts().nlargest(2)).reset_index()
         temp[colname]= temp[colname].astype(str)
-        temp.loc[len(temp)]= ["others...", self.df[colname].count()- temp["count"].sum()]
         temp["Count_Percentage"]= (temp["count"]/self.df[colname].count())*100
         temp= temp.round(decimals=self.floating_point_limit)
 
@@ -714,6 +736,8 @@ class AutoEDAHelper():
         # print(temp.std())
 
         return desc_stats   #.round(decimals=2)
+
+
 
     
 

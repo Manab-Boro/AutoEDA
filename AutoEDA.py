@@ -10,14 +10,15 @@ class AutoEDA():
     def __init__(self, df_path, htmlfilename= "index.html", **karwas):
         '''Any keyarugemts needed to read the datafile send it inside 'datafile' keyargument'''
         self.df= pd.DataFrame()
+        self.no_of_steps= 4
         self.__read_from_file(df_path)
         
         self.__constrains_for_df_extract__(htmlfilename)
-        self.no_of_steps= 4
         self.create_html()
         
 
     def __read_from_file(self, df_path):
+        print(f"step 1/{self.no_of_steps}: Loading the Dataframe in memory")
         if type(df_path)== pd.core.frame.DataFrame:
             self.df= df_path
         elif not os.path.exists(df_path):
@@ -79,13 +80,13 @@ class AutoEDA():
 
     def create_html(self):
         #HTML df overiew:
-        print(f"step 1/{self.no_of_steps}: initializing dataframe")
+        print(f"step 2/{self.no_of_steps}: Processing dataframe values")
         auto_eda_helper= AutoEDAHelper(self.df)
         df_overiew_html, df_details_html= auto_eda_helper.df_overview_as_html(self.datatypes_for_corr_plot, self.pairplot_sample_size, self.floating_point_limit, self.img_type)
         self.write_html_header(df_overiew_html, df_details_html)
 
         #HTML write all feature details:
-        print(f"step 2/{self.no_of_steps}: extracting information for each columns")
+        print(f"step 3/{self.no_of_steps}: Extracting information for each columns")
         col_and_type_mapping= auto_eda_helper.get_features_type
         for colname in (pbar:= tqdm(col_and_type_mapping)):
             pbar.set_postfix_str(colname)
@@ -96,11 +97,14 @@ class AutoEDA():
             html_file.close()
 
         #HTML write tail: -js, etc
-        print(f"step 3/{self.no_of_steps}: wrapping up html")
+        print(f"step 4/{self.no_of_steps}: Wrapping up html")
         self.write_html_tail()
 
 
 if __name__ == '__main__':
-    dataset_file= R"D:\Scaler\projects\automated_eda\dataset_in\basketball_players.csv"
+    # dataset_file= R"D:\Scaler\projects\automated_eda\dataset_in\Online Retail II UCI\online_retail_II.csv"
+    # dataset_file= R"D:\Scaler\projects\automated_eda\dataset_in\Credit EDA Case Study\application_data.csv"
+    # dataset_file= R"D:\Scaler\projects\automated_eda\dataset_in\basketball_players.csv"
+    dataset_file= R"D:\Scaler\projects\automated_eda\dataset_in\Divvy_Trips_2019_Q1.xlsx\Divvy_Trips_2019_Q1.xlsx"
     auto_eda= AutoEDA(dataset_file)
 
