@@ -7,7 +7,7 @@ from AutoEDAHelper import AutoEDAHelper
 
 
 class AutoEDA():
-    def __init__(self, df_path, htmlfilename= "AutoEDA.html", **karwas):
+    def __init__(self, df_path, htmlfilename= "index.html", **karwas):
         '''Any keyarugemts needed to read the datafile send it inside 'datafile' keyargument'''
         self.df= pd.DataFrame()
         self.__read_from_file(df_path)
