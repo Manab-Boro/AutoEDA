@@ -154,6 +154,7 @@ class AutoEDAHelper():
         self.img_type= img_type
         self.pairplot_sample_size= pairplot_sample_size
         self.floating_point_limit= floating_point_limit
+        pd.set_option('display.float_format', f'{{:.{floating_point_limit}f}}'.format)
 
         memory_use= self.get_memory_usage
         Rows, Features= self.df.shape
@@ -202,7 +203,7 @@ class AutoEDAHelper():
         
         df_overiew_html= f'''
             <div class= {self.div_class_df_overiew} id="{self.div_ft_overiew_id}">
-                <img class= "{self.img_class_logo}" src="pngwing.com(1).png" alt="logo.png">
+                <img class= "{self.img_class_logo}" src="AutoEDA_include/pngwing.com(1).png" alt="logo.png">
                 {top_table_1}{top_table_2}
                 <p class= "{self.para_class_df_overiew_descprtion}">This is an auto-generated HTML page demo.<br>
                 The scope of this project is to analyze exploratory data and do some basic preprocessing autometically.

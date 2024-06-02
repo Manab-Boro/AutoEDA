@@ -180,8 +180,9 @@ div.ft-div-details-inner-img{
 }
 div.ft-div-details-inner-corr{
   float: left;
-  height: 500px;
-  margin-left: 25px;
+  height: 510px;
+  margin-left: 15px;
+  width: 240px;
   overflow-y: scroll;
 }
 div.ft-div-details-inner-tables {
@@ -197,7 +198,7 @@ img.ft-img-countplt{
 table#ft-table-details-corr{ 
   margin: 10px;
   border: 1px solid white;
-  font-size: 10px;
+  font-size: 8px;
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
 }

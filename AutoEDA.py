@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 from tqdm import tqdm
-from AutoEDAHelper import AutoEDAHelper
+from AutoEDA_include.AutoEDAHelper import AutoEDAHelper
 
 
 
@@ -52,7 +52,7 @@ class AutoEDA():
 
     def write_html_header(self, df_overiew_html, df_details_html):
         '''This function wirtes dataframe overview and css file in the html file'''
-        html_content_start= '<!DOCTYPE html><html><head><link rel="stylesheet" href="AutoEDA.css"><title>AutoEDA</title></head><body>'
+        html_content_start= '<!DOCTYPE html><html><head><link rel="stylesheet" href="AutoEDA_include/AutoEDA.css"><title>AutoEDA</title></head><body>'
         html_file = open(self.html_out_file, "w")
         html_file.write(html_content_start+ df_overiew_html+ df_details_html)
         html_file.close()
